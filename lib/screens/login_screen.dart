@@ -93,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-    controller.dispose();
     if (salvou == true && mounted) {
       showSnack(context, 'Servidor: ${ApiConfig.baseUrl}');
     }

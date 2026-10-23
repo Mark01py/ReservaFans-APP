@@ -93,7 +93,6 @@ class _ResourceFormScreenState extends State<ResourceFormScreen> {
         ],
       ),
     );
-    ctrl.dispose();
     if (nome == null || nome.isEmpty) return;
     try {
       final nova = await _api.criarCategoria(nome);
