@@ -70,3 +70,18 @@ Repositório Git com este projeto completo:
 git remote add origin <URL-do-seu-repositorio>
 git push -u origin main
 ```
+
+## Gerar o APK
+
+**No seu computador** (precisa do Flutter e do Android SDK; confira com `flutter doctor`):
+```bash
+flutter build apk --release
+```
+O arquivo fica em `build/app/outputs/flutter-apk/app-release.apk`. Instale no celular copiando o arquivo
+(ou `flutter install`). Ele é assinado com a chave de debug do Flutter, suficiente para testes e para a prova.
+
+**Pela nuvem (sem instalar nada):** ao enviar o projeto para o GitHub, o workflow `.github/workflows/build-apk.yml`
+compila o APK sozinho. Abra a aba **Actions → Gerar APK** do repositório e baixe o arquivo em **Artifacts → reservafans-apk**.
+
+No celular, abra o app, toque em **Configurar servidor** e informe `http://IP-DO-COMPUTADOR:3000/api`
+(celular e computador na mesma rede, com a API rodando).
