@@ -1,4 +1,4 @@
-name: Gerar APK
+﻿name: Gerar APK
 
 on:
   push:
@@ -8,30 +8,55 @@ on:
 jobs:
   apk:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - uses: subosito/flutter-action@v2
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      # Gera android/ e web/ (se ainda nao existirem no repositorio) e baixa as dependencias
-      - name: Preparar projeto
-        run: dart tool/setup.dart
+      - name: Instalar dependencias
+        run: flutter pub get
 
-      - name: Testes
+      - name: Configurar assinatura Android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Executar testes
         run: flutter test
 
-      - name: Compilar APK
+      - name: Compilar APK assinado
         run: flutter build apk --release
 
-      - uses: actions/upload-artifact@v4
+      - name: Disponibilizar APK
+        uses: actions/upload-artifact@v4
         with:
           name: reservafans-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Remover arquivos temporarios de assinatura
+        if: always()
+        run: |
+          rm -f android/key.properties
+          rm -f android/app/upload-keystore.jks

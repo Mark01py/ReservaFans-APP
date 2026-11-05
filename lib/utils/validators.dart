@@ -44,7 +44,7 @@ class Validators {
     final ok = uri != null &&
         (uri.scheme == 'http' || uri.scheme == 'https') &&
         uri.host.isNotEmpty;
-    return ok ? null : 'Use o formato http://endereco:3000/api';
+    return ok ? null : 'Informe um endereco valido, iniciado por http:// ou https://';
   }
 
   static String? horarioAula(TimeOfDay? t) {

@@ -184,7 +184,7 @@ class _ResourceFormScreenState extends State<ResourceFormScreen> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<int>(
-                            value: _categoriaId,
+                            initialValue: _categoriaId,
                             decoration: const InputDecoration(
                                 labelText: 'Categoria', border: OutlineInputBorder()),
                             items: [

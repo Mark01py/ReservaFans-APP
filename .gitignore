@@ -1,4 +1,4 @@
-.dart_tool/
+﻿.dart_tool/
 .packages
 build/
 .flutter-plugins
@@ -10,4 +10,8 @@ local.properties
 /android/app/debug
 /android/app/profile
 /android/app/release
-pubspec.lock
+
+# Arquivos de assinatura Android
+key.properties
+*.jks
+*.keystore

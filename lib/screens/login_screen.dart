@@ -65,9 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Emulador Android: http://10.0.2.2:3000/api\n'
-                'Navegador: http://localhost:3000/api\n'
-                'Celular físico: http://IP-DO-COMPUTADOR:3000/api',
+                'Servidor de producao:\n'
+                'https://reservafans-api-production.up.railway.app/api\n\n'
+                'O endereco pode ser alterado manualmente, se necessario.',
                 style: TextStyle(fontSize: 12),
               ),
             ],

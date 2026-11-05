@@ -1,87 +1,207 @@
-# ReservaFans — App Flutter (Android + Web)
+# ReservaFans — Sistema de Reservas
 
-Aplicativo em **Flutter e Dart** para reservar salas, auditórios e equipamentos da FANS.
-Consome a **API REST do ReservaFans** (Node.js + Express + SQLite), que é o banco de dados real do sistema.
-Mesmo código para **Android** e **navegador**.
+Aplicativo multiplataforma desenvolvido com Flutter e Dart para gerenciamento de reservas de salas, auditórios e equipamentos da FANS.
 
-## Como rodar
+O sistema utiliza uma API REST desenvolvida em Node.js e Express, com persistência de dados em banco SQLite. A aplicação está disponível para Android e navegadores Web.
 
-### 1) Subir a API (banco de dados real)
-Na pasta `reservafans-api`:
+## Tecnologias utilizadas
+
+- Flutter e Dart
+- Node.js e Express
+- SQLite e Sequelize
+- API REST
+- SharedPreferences
+- Git e GitHub
+- Railway para hospedagem da API
+
+## API de produção
+
+A API está hospedada na Railway:
+
+- Endereço: https://reservafans-api-production.up.railway.app
+- Endpoint de saúde: https://reservafans-api-production.up.railway.app/api/health
+- Base da API: https://reservafans-api-production.up.railway.app/api
+
+O aplicativo utiliza esse endereço como configuração padrão.
+
+Repositório do backend:
+
+https://github.com/Mark01py/ReservaFans-Api
+
+## Como executar o projeto
+
+### 1. Requisitos
+
+- Flutter instalado e configurado.
+- Dart SDK.
+- Android Studio e Android SDK para execução e compilação Android.
+- Git.
+
+### 2. Obter as dependências
+
+Na pasta do projeto, execute:
+
 ```bash
-npm install
-npm run seed:demo     # cria o banco com dados de exemplo
-npm start             # http://localhost:3000
+flutter pub get
 ```
-Contas: administrador `admin@fans.edu.br / admin123` · usuário `aluno.teste@fans.edu.br / teste123`.
 
-### 2) Preparar o projeto Flutter (uma vez, após clonar)
-Com o Flutter instalado (`flutter doctor`), na pasta deste projeto:
+### 3. Executar a aplicação
+
+Para executar no navegador:
+
 ```bash
-dart tool/setup.dart
+flutter run -d chrome
 ```
-O script gera as pastas `android/` e `web/`, libera internet/HTTP no Android e roda `flutter pub get`.
-Depois faça commit das pastas geradas (`git add . && git commit -m "Plataformas Android e Web"`).
 
-### 3) Executar
+Para executar em um dispositivo Android:
+
 ```bash
-flutter run -d chrome            # navegador
-flutter run -d <id-do-android>   # emulador ou celular (flutter devices)
-flutter test                     # testes unitários
+flutter devices
+flutter run -d ID_DO_DISPOSITIVO
 ```
 
-### Endereço da API
-Padrão: navegador `http://localhost:3000/api` · emulador Android `http://10.0.2.2:3000/api`.
-Em **celular físico**, na tela de login toque em **Configurar servidor** e informe `http://IP-DO-COMPUTADOR:3000/api`
-(celular e computador na mesma rede). O endereço escolhido fica salvo no aparelho.
+Para executar os testes:
 
-## Requisitos da prova × onde estão
+```bash
+flutter test
+```
+
+## Configuração do servidor
+
+Por padrão, o aplicativo utiliza a API de produção hospedada na Railway.
+
+A tela de login disponibiliza a opção **Configurar servidor**, permitindo informar outro endereço de API quando necessário, como em ambientes locais de desenvolvimento.
+
+## Funcionalidades
+
+### Usuário
+
+- Visualização do catálogo de recursos disponíveis.
+- Consulta de categorias e estoque.
+- Realização de reservas individuais.
+- Realização de reservas por período.
+- Consulta das próprias reservas.
+- Cancelamento de reservas próprias.
+
+### Administrador
+
+- Painel administrativo.
+- Cadastro e edição de recursos.
+- Inclusão de fotografias dos recursos.
+- Cadastro e gerenciamento de categorias.
+- Consulta das reservas.
+- Controle de retirada e devolução de recursos.
+
+O controle de permissões também é realizado pela API, que restringe as operações administrativas aos usuários autorizados.
+
+## Requisitos acadêmicos e implementação
 
 | Requisito | Implementação |
 |---|---|
-| Multiplataforma (Android + web) | Um único código; plataformas `android` e `web`. Sem pacotes exclusivos de uma plataforma (`dart:io` não é usado). |
-| Flutter e Dart | Todo o app em `lib/` (Material 3). |
-| Comunicação HTTP | `lib/services/api_client.dart` (pacote `http`: GET, POST, PUT, PATCH, DELETE, multipart) e `reservafans_api.dart` (um método por endpoint). |
-| Acesso a banco de dados | A API grava e lê no SQLite (Sequelize). O app não usa listas em memória nem dados fixos. |
-| Persistência | Reservas, recursos e categorias ficam no banco; a **sessão** (token) fica em `shared_preferences` — ao fechar e reabrir, o app continua logado (`state/auth_state.dart`). |
-| Consulta | Catálogo com estoque, filtro por categoria, minhas reservas, painel do admin, devoluções. |
-| Cadastro | Nova reserva (única ou por período), cadastro/edição de recurso com foto, nova categoria. |
-| Atualização da interface | Após cadastrar, cancelar ou devolver, as telas recarregam da API; puxar para atualizar. |
-| Validação | `utils/validators.dart`: e-mail, senha, campos obrigatórios, quantidade inteira ≥ 0, horário de aula 18:50–22:25, devolução depois do início, datas do período. |
-| Tratamento de erros | Falha de conexão, timeout e erros da API viram mensagens (`ApiException`); telas mostram `ErrorView` com "Tentar novamente", faixas de erro e SnackBars; sessão expirada volta ao login. |
-| Arquitetura | `models/` · `services/` · `state/` · `screens/` · `widgets/` · `utils/` · `config/`. |
+| Multiplataforma | Aplicação Flutter para Android e Web. |
+| Flutter e Dart | Código-fonte organizado na pasta `lib/`. |
+| Comunicação HTTP | `services/api_client.dart` e `reservafans_api.dart`. |
+| Banco de dados | Persistência realizada pela API utilizando SQLite e Sequelize. |
+| Persistência de sessão | Token armazenado por meio do SharedPreferences. |
+| Consulta | Catálogo, estoque, reservas e painel administrativo. |
+| Cadastro | Reservas, recursos e categorias. |
+| Atualização | Dados atualizados a partir das respostas da API. |
+| Validação | Validações de formulários, datas, horários e quantidades. |
+| Tratamento de erros | Tratamento de falhas de conexão, timeout e respostas da API. |
+| Arquitetura | Organização em `models/`, `services/`, `state/`, `screens/`, `widgets/`, `utils/` e `config/`. |
 
-## Níveis de acesso
-- **Usuário:** catálogo, reservar, minhas reservas, cancelar as próprias.
-- **Administrador:** painel, gestão de recursos e categorias (com foto), controle de devoluções.
-O servidor também valida o perfil (resposta 403 para usuário comum em rotas de admin).
+## Contas para testes
 
-## Roteiro de teste (Android e navegador)
-1. Login com a conta de usuário → catálogo carrega itens da API.
-2. Abrir um item → reserva única (data, 18:50–22:25) → confirmar → aparece em *Minhas reservas*.
-3. Tentar horário fora de 18:50–22:25 → o formulário bloqueia; tentar esgotar o estoque → erro da API exibido.
-4. Fechar e reabrir o app → continua logado e os dados continuam lá.
-5. Parar a API e tocar em "Tentar novamente" → mensagem de falha de conexão.
-6. Entrar como admin → cadastrar recurso com foto e nova categoria; marcar devolução.
+Foram disponibilizadas as seguintes contas de teste:
 
-## Entrega
-Repositório Git com este projeto completo:
-```bash
-git remote add origin <URL-do-seu-repositorio>
-git push -u origin main
-```
+| Perfil | E-mail |
+|---|---|
+| Administrador | admin@fans.edu.br |
+| Usuário | professor.teste@fans.edu.br |
+
+As senhas devem ser fornecidas separadamente aos responsáveis pela avaliação. Não são disponibilizadas neste repositório.
+
+## Roteiro de testes
+
+1. Acessar o aplicativo com uma conta de usuário.
+2. Verificar o carregamento do catálogo de recursos.
+3. Realizar uma reserva e conferir sua inclusão em Minhas Reservas.
+4. Testar as validações de horários e disponibilidade.
+5. Fechar e reabrir o aplicativo para verificar a persistência da sessão.
+6. Acessar com uma conta administrativa.
+7. Cadastrar ou editar recursos e categorias.
+8. Verificar as operações de retirada e devolução.
 
 ## Gerar o APK
 
-**No seu computador** (precisa do Flutter e do Android SDK; confira com `flutter doctor`):
+Para gerar o APK localmente, utilize:
+
 ```bash
 flutter build apk --release
 ```
-O arquivo fica em `build/app/outputs/flutter-apk/app-release.apk`. Instale no celular copiando o arquivo
-(ou `flutter install`). Ele é assinado com a chave de debug do Flutter, suficiente para testes e para a prova.
 
-**Pela nuvem (sem instalar nada):** ao enviar o projeto para o GitHub, o workflow `.github/workflows/build-apk.yml`
-compila o APK sozinho. Abra a aba **Actions → Gerar APK** do repositório e baixe o arquivo em **Artifacts → reservafans-apk**.
+O arquivo será gerado em:
 
-No celular, abra o app, toque em **Configurar servidor** e informe `http://IP-DO-COMPUTADOR:3000/api`
-(celular e computador na mesma rede, com a API rodando).
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+A compilação de produção utiliza a configuração de assinatura Android. A chave privada e os arquivos de configuração de assinatura não fazem parte deste repositório.
+
+### Compilação automática pelo GitHub Actions
+
+O projeto possui um workflow em:
+
+```text
+.github/workflows/build-apk.yml
+```
+
+Após o envio de alterações para a branch `main`, o GitHub Actions executa automaticamente:
+
+1. Configuração do ambiente Java e Flutter.
+2. Instalação das dependências.
+3. Configuração da assinatura Android por meio dos GitHub Secrets.
+4. Execução dos testes.
+5. Compilação do APK em versão release.
+6. Disponibilização do APK como artefato da execução.
+
+Para baixar o arquivo:
+
+1. Acesse a aba **Actions** do repositório.
+2. Abra a execução do workflow **Gerar APK**.
+3. Localize a seção **Artifacts**.
+4. Baixe o artefato `reservafans-apk`.
+
+## Estrutura do projeto
+
+```text
+reservafans_app/
+├── .github/
+│   └── workflows/
+│       └── build-apk.yml
+├── android/
+├── assets/
+├── lib/
+│   ├── config/
+│   ├── models/
+│   ├── screens/
+│   ├── services/
+│   ├── state/
+│   ├── utils/
+│   └── widgets/
+├── test/
+├── web/
+├── windows/
+├── pubspec.yaml
+└── README.md
+```
+
+## Repositório
+
+O código-fonte do aplicativo é mantido no GitHub.
+
+A versão Web e o respectivo endereço público serão disponibilizados após a conclusão da publicação.
+
+---
+
+**ReservaFans — Sistema de Reservas da FANS.**
